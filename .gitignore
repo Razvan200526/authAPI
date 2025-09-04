@@ -19,7 +19,7 @@ node_modules/
 jspm_packages/
 
 
-src/migrations
+/src/migrations
 sqlite.db
 
 *.tsbuildinfo
