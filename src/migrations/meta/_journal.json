@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1756995338565,
+      "tag": "0000_youthful_karen_page",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1756996640031,
+      "tag": "0001_ambitious_pixie",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1756999208170,
+      "tag": "0002_bent_black_bolt",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1757000932434,
+      "tag": "0003_yummy_shadowcat",
+      "breakpoints": true
+    }
+  ]
+}
