@@ -4,7 +4,7 @@ export const users = table(
 	'users',
 	{
 		id: t.int().primaryKey({ autoIncrement: true }),
-		username: t.text('first_name'),
+		username: t.text('username'),
 		email: t.text().notNull(),
 		password: t.text().notNull(),
 		role: t.text().$type<'guest' | 'user' | 'admin'>().default('guest'),

@@ -18,6 +18,10 @@ build/Release
 node_modules/
 jspm_packages/
 
+
+src/migrations
+sqlite.db
+
 *.tsbuildinfo
 
 # Optional REPL history
@@ -43,4 +47,3 @@ jspm_packages/
 
 # Serverless directories
 .serverless/
-

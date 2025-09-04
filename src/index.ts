@@ -1,9 +1,15 @@
-import { app } from "./server/hono";
+import { cyan, red, underline } from 'console-log-colors';
+import env from './env';
+import { app } from './server/hono';
 
 Bun.serve({
-	development: Bun.env.NODE_ENV === "development",
-	port: Bun.env.PORT || 3000,
+	development: env.NODE_ENV === 'development',
+	port: env.PORT,
 	fetch: app.fetch,
 });
 
-console.log(`Server running at http://localhost:${Bun.env.PORT || 3000}`);
+console.log(
+	cyan.bold(
+		`Server running at ${underline(`http://localhost:${red(env.PORT)}`)}`,
+	),
+);

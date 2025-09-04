@@ -1,0 +1,62 @@
+export class Env {
+	public readonly DATABASE_URL: string;
+	public readonly JWT_SECRET: string;
+	public readonly NODE_ENV: string;
+	public readonly PORT: string;
+
+	private static instance: Env;
+
+	constructor() {
+		this.DATABASE_URL = this.getRequiredEnvVar('DATABASE_URL');
+		this.JWT_SECRET = this.getRequiredEnvVar('JWT_SECRET');
+		this.NODE_ENV = this.getEnvVar('NODE_ENV', 'development');
+		this.PORT = this.getEnvVar('PORT', '3000');
+
+		this.validateEnvironment();
+	}
+
+	private getRequiredEnvVar(key: string): string {
+		const value = Bun.env[key];
+		if (!value || value.trim() === '') {
+			throw new Error(
+				`Environment variable ${key} is required but not defined`,
+			);
+		}
+		return value.trim();
+	}
+
+	private getEnvVar(key: string, defaultValue: string): string {
+		const value = Bun.env[key];
+		return value && value.trim() !== '' ? value.trim() : defaultValue;
+	}
+
+	private validateEnvironment(): void {
+		const validEnvironments = ['development', 'production', 'test'];
+		if (!validEnvironments.includes(this.NODE_ENV)) {
+			throw new Error(
+				`NODE_ENV must be one of: ${validEnvironments.join(', ')}`,
+			);
+		}
+
+		const portNum = parseInt(this.PORT, 10);
+		if (Number.isNaN(portNum) || portNum < 1 || portNum > 65535) {
+			throw new Error('PORT must be a valid port number (1-65535)');
+		}
+
+		if (this.JWT_SECRET.length < 32) {
+			throw new Error(
+				'JWT_SECRET must be at least 32 characters long for security',
+			);
+		}
+	}
+
+	public static getInstance(): Env {
+		if (!Env.instance) {
+			Env.instance = new Env();
+		}
+		return Env.instance;
+	}
+}
+
+const env = new Env();
+export default env;
