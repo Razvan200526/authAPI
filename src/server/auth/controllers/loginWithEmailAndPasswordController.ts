@@ -14,7 +14,6 @@ export const LoginWithEmailAndPasswordController = async (c: Context) => {
 		if (!valid) {
 			return c.json({ error: 'Invalid login credentials format' }, 400);
 		}
-
 		const user = await LoginWithEmailAndPasswordService({ email, password });
 		if (!user) {
 			return c.json({ error: 'Invalid login credentials' }, 401);

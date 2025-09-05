@@ -18,3 +18,18 @@ export const users = table(
 		emailIdx: t.uniqueIndex('email_idx').on(table.email),
 	}),
 );
+
+export const passwordResetTokens = table(
+	'password_reset_token',
+	{
+		id: t.integer().primaryKey({ autoIncrement: true }),
+		userId: t.integer().notNull(),
+		token: t.text().notNull(),
+		expiresAt: t.text('expires_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
+		isUsed: t.integer().notNull().default(0),
+	},
+	(table) => ({
+		tokenIdx: t.uniqueIndex('token_idx').on(table.token),
+		userIdIdx: t.index('user_id_idx').on(table.userId),
+	}),
+);

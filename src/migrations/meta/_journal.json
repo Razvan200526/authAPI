@@ -43,6 +43,13 @@
       "when": 1757011668635,
       "tag": "0005_spicy_scarecrow",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1757093757089,
+      "tag": "0006_blue_satana",
+      "breakpoints": true
     }
   ]
 }

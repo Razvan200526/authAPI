@@ -17,6 +17,23 @@ export const paswordResetSchema = z.object({
 	email: z.email(),
 });
 
+export const passwordResetConfirmSchema = z.object({
+	token: z.string().min(10),
+	password: z.string().min(8).max(100),
+});
+
+export const validatePasswordResetConfirm = (input: {
+	token: string;
+	password: string;
+}): boolean => {
+	try {
+		const result = passwordResetConfirmSchema.safeParse(input);
+		return result.success;
+	} catch {
+		return false;
+	}
+};
+
 export const validatePasswordReset = (email: string): boolean => {
 	try {
 		const result = paswordResetSchema.safeParse({ email });
