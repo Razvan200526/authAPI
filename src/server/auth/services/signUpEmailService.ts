@@ -1,6 +1,6 @@
 import { hash } from 'bcryptjs';
-import { User, type UserModel } from '../models/userModel';
-
+import { User } from '../models/user';
+import type { UserModel } from '../types';
 export const createUserService = async (user: UserModel) => {
 	const { username, email, password, role } = user;
 	const hashedPassword = await hash(password, 10);

@@ -27,7 +27,6 @@ mock.module('../database/db', () => ({
 	},
 }));
 
-
 describe('User Model', () => {
 	let validUserData: UserModel;
 
@@ -121,6 +120,7 @@ describe('User Model', () => {
 					email: 'test@example.com',
 					username: 'testuser',
 					role: 'user',
+					status: 'online' as const,
 					password: 'hashedPassword',
 					createdAt: '2024-01-01T00:00:00.000Z',
 					updatedAt: '2024-01-01T00:00:00.000Z',
@@ -134,6 +134,7 @@ describe('User Model', () => {
 				email: 'test@example.com',
 				username: 'testuser',
 				role: 'user' as const,
+				status: 'online' as const,
 				password: 'hashedPassword',
 				createdAt: '2024-01-01T00:00:00.000Z',
 				updatedAt: '2024-01-01T00:00:00.000Z',

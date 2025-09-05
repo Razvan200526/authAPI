@@ -1,9 +1,9 @@
 import type { Context } from 'hono';
 import jwt from 'jsonwebtoken';
 import env from '../../../env';
-import type { UserModel } from '../models/userModel';
 import { validateUser } from '../models/validation';
 import { createUserService } from '../services/signUpEmailService';
+import type { UserModel } from '../types';
 
 export const signUpWithEmailController = async (c: Context) => {
 	try {
@@ -15,8 +15,9 @@ export const signUpWithEmailController = async (c: Context) => {
 		const newUser = await createUserService(userData);
 		if (newUser[0]) {
 			const accessToken = jwt.sign({ id: newUser[0].id }, env.JWT_SECRET, {
-				expiresIn: '1m',
+				expiresIn: '24h',
 			});
+
 			return c.json(
 				{ accessToken: accessToken, message: 'User created successfully' },
 				201,

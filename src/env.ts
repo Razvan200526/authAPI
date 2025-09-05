@@ -2,6 +2,7 @@ export class Env {
 	public readonly DATABASE_URL: string;
 	public readonly JWT_SECRET: string;
 	public readonly NODE_ENV: string;
+	public readonly JWT_REFRESH_TOKEN: string;
 	public readonly PORT: string;
 
 	private static instance: Env;
@@ -9,6 +10,7 @@ export class Env {
 	constructor() {
 		this.DATABASE_URL = this.getRequiredEnvVar('DATABASE_URL');
 		this.JWT_SECRET = this.getRequiredEnvVar('JWT_SECRET');
+		this.JWT_REFRESH_TOKEN = this.getRequiredEnvVar('JWT_REFRESH_TOKEN');
 		this.NODE_ENV = this.getEnvVar('NODE_ENV', 'development');
 		this.PORT = this.getEnvVar('PORT', '3000');
 
@@ -46,6 +48,11 @@ export class Env {
 		if (this.JWT_SECRET.length < 32) {
 			throw new Error(
 				'JWT_SECRET must be at least 32 characters long for security',
+			);
+		}
+		if (this.JWT_REFRESH_TOKEN.length < 32) {
+			throw new Error(
+				'JWT_REFRESH_TOKEN must be at least 32 characters long for security',
 			);
 		}
 	}

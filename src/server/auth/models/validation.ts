@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { UserModel } from './userModel';
+import type { LoginModel, UserModel } from '../types';
 
 export const userSchema = z.object({
 	email: z.email(),
@@ -7,6 +7,23 @@ export const userSchema = z.object({
 	password: z.string().min(1),
 	role: z.enum(['guest', 'user', 'admin']).optional(),
 });
+
+export const loginSchema = z.object({
+	email: z.email(),
+	password: z.string().min(1),
+});
+
+export const validateLogin = (login: LoginModel): boolean => {
+	try {
+		const result = loginSchema.safeParse(login);
+		console.log('validateLogin - input:', login);
+		console.log('validateLogin - schema result:', result);
+		return result.success;
+	} catch (error) {
+		console.log('validateLogin - error:', error);
+		return false;
+	}
+};
 
 export const validateUser = (user: UserModel): boolean => {
 	try {
