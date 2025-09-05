@@ -4,6 +4,8 @@ export class Env {
 	public readonly NODE_ENV: string;
 	public readonly JWT_REFRESH_TOKEN: string;
 	public readonly PORT: string;
+	public readonly MAIL_USER: string;
+	public readonly MAIL_PASSWORD: string;
 
 	private static instance: Env;
 
@@ -13,7 +15,8 @@ export class Env {
 		this.JWT_REFRESH_TOKEN = this.getRequiredEnvVar('JWT_REFRESH_TOKEN');
 		this.NODE_ENV = this.getEnvVar('NODE_ENV', 'development');
 		this.PORT = this.getEnvVar('PORT', '3000');
-
+		this.MAIL_USER = this.getRequiredEnvVar('MAIL_USER');
+		this.MAIL_PASSWORD = this.getRequiredEnvVar('MAIL_PASSWORD');
 		this.validateEnvironment();
 	}
 

@@ -13,6 +13,22 @@ export const loginSchema = z.object({
 	password: z.string().min(1),
 });
 
+export const paswordResetSchema = z.object({
+	email: z.email(),
+});
+
+export const validatePasswordReset = (email: string): boolean => {
+	try {
+		const result = paswordResetSchema.safeParse({ email });
+		console.log('validatePasswordReset - input:', email);
+		console.log('validatePasswordReset - schema result:', result);
+		return result.success;
+	} catch (error) {
+		console.log('validatePasswordReset - error:', error);
+		return false;
+	}
+};
+
 export const validateLogin = (login: LoginModel): boolean => {
 	try {
 		const result = loginSchema.safeParse(login);
