@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test';
-import { User, type UserModel } from '../server/auth/models/userModel';
+import { User } from '../server/auth/models/user';
+import type { UserModel } from '../server/auth/types';
 
 // Mock the database client
 mock.module('../database/db', () => ({
@@ -93,6 +94,7 @@ describe('User Model', () => {
 								email: 'test@example.com',
 								username: 'testuser',
 								role: 'user' as const,
+								status: 'online' as const,
 								password: 'hashedPassword',
 								createdAt: '2024-01-01T00:00:00.000Z',
 								updatedAt: '2024-01-01T00:00:00.000Z',

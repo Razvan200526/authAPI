@@ -32,7 +32,7 @@ describe('Hono App', () => {
 			});
 
 			expect(res.status).toBe(200);
-			expect(await res.text()).toBe('Hello World!');
+			expect(await res.text()).toBe('Hello world');
 		});
 
 		it('should have auth routes mounted', async () => {

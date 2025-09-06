@@ -1,39 +1,39 @@
 import { describe, expect, it } from 'bun:test';
-import { authRoutes } from '../server/auth/routes';
+import authRouter from '../server/auth/routes/index';
 
 describe('Auth Routes', () => {
 	describe('route configuration', () => {
 		it('should be a Hono instance', () => {
-			expect(authRoutes).toBeDefined();
-			expect(typeof authRoutes.post).toBe('function');
-			expect(typeof authRoutes.get).toBe('function');
-			expect(typeof authRoutes.put).toBe('function');
-			expect(typeof authRoutes.delete).toBe('function');
+			expect(authRouter).toBeDefined();
+			expect(typeof authRouter.post).toBe('function');
+			expect(typeof authRouter.get).toBe('function');
+			expect(typeof authRouter.put).toBe('function');
+			expect(typeof authRouter.delete).toBe('function');
 		});
 
 		it('should have signup email route configured', () => {
 			// Test that the route is properly configured
 			// This is a structural test to ensure the route exists
-			expect(authRoutes).toBeTruthy();
+			expect(authRouter).toBeTruthy();
 		});
 	});
 
 	describe('route methods', () => {
 		it('should support POST method for signup', () => {
-			expect(typeof authRoutes.post).toBe('function');
+			expect(typeof authRouter.post).toBe('function');
 		});
 
 		it('should have proper route structure', () => {
 			// Verify the routes object has the expected structure
-			expect(authRoutes.routes).toBeDefined();
+			expect(authRouter.routes).toBeDefined();
 		});
 	});
 
 	describe('integration', () => {
 		it('should be mountable in main app', () => {
 			// Test that the auth routes can be properly mounted
-			expect(authRoutes).toBeInstanceOf(Object);
-			expect(authRoutes.routes).toBeDefined();
+			expect(authRouter).toBeInstanceOf(Object);
+			expect(authRouter.routes).toBeDefined();
 		});
 	});
 });

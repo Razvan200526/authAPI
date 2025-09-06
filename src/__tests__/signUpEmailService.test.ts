@@ -1,14 +1,16 @@
-import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test';
-import type { UserModel } from '../server/auth/models/userModel';
-import { createUserService } from '../server/auth/services/signUpEmailService';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
+import type { UserModel } from '../server/auth/types';
 
-// Mock bcryptjs
+// Create a single hash spy
+const hashSpy = mock(() => Promise.resolve('hashedPassword123'));
+
+// Mock bcryptjs with the spy (only once)
 mock.module('bcryptjs', () => ({
-	hash: mock(() => Promise.resolve('hashedPassword123')),
+	hash: hashSpy,
 }));
 
 // Mock User class
-mock.module('../server/auth/models/userModel', () => ({
+mock.module('../server/auth/models/user', () => ({
 	User: mock().mockImplementation((userData: UserModel) => ({
 		save: mock(() =>
 			Promise.resolve([
@@ -26,6 +28,9 @@ mock.module('../server/auth/models/userModel', () => ({
 	})),
 }));
 
+// Import after mocking
+import { createUserService } from '../server/auth/services/signUpEmailService';
+
 describe('SignUp Email Service', () => {
 	let validUserData: UserModel;
 
@@ -37,20 +42,12 @@ describe('SignUp Email Service', () => {
 			role: 'user',
 		};
 
-		mock.restore();
-	});
-
-	afterEach(() => {
-		mock.restore();
+		// Clear call history
+		hashSpy.mockClear();
 	});
 
 	describe('createUserService', () => {
 		it('should hash password before creating user', async () => {
-			const hashSpy = mock(() => Promise.resolve('hashedPassword123'));
-			mock.module('bcryptjs', () => ({
-				hash: hashSpy,
-			}));
-
 			await createUserService(validUserData);
 
 			expect(hashSpy).toHaveBeenCalledWith('password123', 10);
@@ -79,14 +76,9 @@ describe('SignUp Email Service', () => {
 		});
 
 		it('should use bcrypt rounds of 10', async () => {
-			const hashSpy = mock(() => Promise.resolve('hashedPassword123'));
-			mock.module('bcryptjs', () => ({
-				hash: hashSpy,
-			}));
-
 			await createUserService(validUserData);
 
-			expect(hashSpy).toHaveBeenCalledWith(expect.any(String), 10);
+			expect(hashSpy).toHaveBeenCalledWith('password123', 10);
 		});
 	});
 });
