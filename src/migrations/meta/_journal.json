@@ -1,55 +1,55 @@
 {
-  "version": "7",
-  "dialect": "sqlite",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "6",
-      "when": 1757004749140,
-      "tag": "0000_adorable_barracuda",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1757004802046,
-      "tag": "0001_left_vivisector",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1757011440566,
-      "tag": "0002_ambiguous_red_shift",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1757011469877,
-      "tag": "0003_third_switch",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1757011517356,
-      "tag": "0004_burly_patriot",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1757011668635,
-      "tag": "0005_spicy_scarecrow",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1757093757089,
-      "tag": "0006_blue_satana",
-      "breakpoints": true
-    }
-  ]
+	"version": "7",
+	"dialect": "sqlite",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "6",
+			"when": 1757004749140,
+			"tag": "0000_adorable_barracuda",
+			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "6",
+			"when": 1757004802046,
+			"tag": "0001_left_vivisector",
+			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "6",
+			"when": 1757011440566,
+			"tag": "0002_ambiguous_red_shift",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "6",
+			"when": 1757011469877,
+			"tag": "0003_third_switch",
+			"breakpoints": true
+		},
+		{
+			"idx": 4,
+			"version": "6",
+			"when": 1757011517356,
+			"tag": "0004_burly_patriot",
+			"breakpoints": true
+		},
+		{
+			"idx": 5,
+			"version": "6",
+			"when": 1757011668635,
+			"tag": "0005_spicy_scarecrow",
+			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "6",
+			"when": 1757093757089,
+			"tag": "0006_blue_satana",
+			"breakpoints": true
+		}
+	]
 }

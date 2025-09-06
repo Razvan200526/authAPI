@@ -2,7 +2,7 @@ import { red } from 'console-log-colors';
 import container from '../di/container';
 import type { Mailer } from './mailer';
 
-async function initializeServices() {
+export async function initMailer() {
 	const mailer = container.get<Mailer>('Mailer');
 
 	const isConnected = await mailer.verifyConnection();
@@ -12,5 +12,3 @@ async function initializeServices() {
 
 	console.log(red('Email service initialized successfully'));
 }
-
-await initializeServices();

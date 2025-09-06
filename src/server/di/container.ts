@@ -1,8 +1,8 @@
 import { Container } from 'inversify';
 import env from '../../env';
+import { ResetPasswordController } from '../auth/controllers/resetPasswordController';
 import { Mailer } from '../mailer/mailer';
 import { PasswordResetMailer } from '../mailer/passwordResetMailer';
-import { ResetPasswordController } from '../auth/controllers/resetPasswordController';
 
 const container = new Container();
 
@@ -13,7 +13,11 @@ container.bind<string>('MAIL_PASSWORD').toConstantValue(env.MAIL_PASSWORD);
 // Bind Mailer service
 container.bind<Mailer>('Mailer').to(Mailer).inSingletonScope();
 // In your container.ts
-container.bind<PasswordResetMailer>('PasswordResetMailer').to(PasswordResetMailer);
-container.bind<ResetPasswordController>('ResetPasswordController').to(ResetPasswordController);
+container
+	.bind<PasswordResetMailer>('PasswordResetMailer')
+	.to(PasswordResetMailer);
+container
+	.bind<ResetPasswordController>('ResetPasswordController')
+	.to(ResetPasswordController);
 
 export default container;

@@ -15,7 +15,9 @@ describe('Validation', () => {
 	describe('validateUser', () => {
 		it('should return true for valid user', async () => {
 			// Fresh import to avoid cached mocks
-			const { validateUser } = await import(`../server/auth/models/validation?fresh=${Date.now()}`);
+			const { validateUser } = await import(
+				`../server/auth/models/validation?fresh=${Date.now()}`
+			);
 
 			const validUser: UserModel = {
 				email: 'test@example.com',
@@ -30,7 +32,9 @@ describe('Validation', () => {
 
 		it('should return false for invalid user', async () => {
 			// Fresh import to avoid cached mocks
-			const { validateUser } = await import(`../server/auth/models/validation?fresh=${Date.now()}`);
+			const { validateUser } = await import(
+				`../server/auth/models/validation?fresh=${Date.now()}`
+			);
 
 			const invalidUser: UserModel = {
 				email: 'invalid-email',
@@ -43,7 +47,9 @@ describe('Validation', () => {
 		});
 
 		it('should return false for short username', async () => {
-			const { validateUser } = await import(`../server/auth/models/validation?fresh=${Date.now()}`);
+			const { validateUser } = await import(
+				`../server/auth/models/validation?fresh=${Date.now()}`
+			);
 
 			const invalidUser: UserModel = {
 				email: 'test@example.com',

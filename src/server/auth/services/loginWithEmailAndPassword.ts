@@ -1,7 +1,7 @@
+import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { client } from '../../../database/db';
 import { users } from '../../../database/schema';
-import bcrypt from 'bcryptjs';
 
 interface LoginProps {
 	email: string;
@@ -29,16 +29,18 @@ export const LoginWithEmailAndPasswordService = async ({
 			throw new Error('User not found');
 		}
 		const user = userResult[0];
-		if(!user){
-		  throw new Error('User not found');
+		if (!user) {
+			throw new Error('User not found');
 		}
 		const passwordMatch = await bcrypt.compare(password, user.password);
-		if(!passwordMatch){
+		if (!passwordMatch) {
 			throw new Error('Invalid password');
 		}
-    return user;
-
+		return user;
 	} catch (error) {
-		console.error('Error');
+		if (error instanceof Error) {
+			console.error(error.message);
+		}
+		console.error('Internal server error');
 	}
 };

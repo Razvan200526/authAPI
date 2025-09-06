@@ -8,6 +8,10 @@ export const userSchema = z.object({
 	role: z.enum(['guest', 'user', 'admin']).optional(),
 });
 
+export const loginUsernameSchema = z.object({
+	username: z.string().min(2).max(100),
+	password: z.string().min(1),
+});
 export const loginSchema = z.object({
 	email: z.email(),
 	password: z.string().min(1),
@@ -17,6 +21,17 @@ export const paswordResetSchema = z.object({
 	email: z.email(),
 });
 
+export const validateLoginUsernameSchema = (input: {
+	username: string;
+	password: string;
+}): boolean => {
+	try {
+		const result = loginUsernameSchema.safeParse(input);
+		return result.success;
+	} catch {
+		return false;
+	}
+};
 export const passwordResetConfirmSchema = z.object({
 	token: z.string().min(10),
 	password: z.string().min(8).max(100),
