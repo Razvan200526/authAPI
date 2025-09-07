@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { z } from 'zod';
-import type { UserModel } from '../server/auth/models/userModel';
+import type { UserModel } from '../server/auth/types';
 
 describe('Validation Isolated', () => {
 	it('should validate email correctly with inline schema', () => {
@@ -18,17 +18,14 @@ describe('Validation Isolated', () => {
 		};
 
 		const result = schema.safeParse(invalidUser);
-		console.log('Inline schema result:', result);
 		expect(result.success).toBe(false);
 
-		// Test the validation function directly
 		const validateUserInline = (user: UserModel): boolean => {
-			const result = schema.safeParse(user);
-			return result.success;
+			const r = schema.safeParse(user);
+			return r.success;
 		};
 
-		const validationResult = validateUserInline(invalidUser);
-		console.log('Inline validateUser result:', validationResult);
+		const validationResult = validateUserInline(invalidUser as any);
 		expect(validationResult).toBe(false);
 	});
 });

@@ -1,0 +1,20 @@
+[install]
+# Install packages from npm registry
+registry = "https://registry.npmjs.org"
+
+# Automatically install peer dependencies
+auto = true
+
+# Cache directory
+cache = "node_modules/.cache/bun"
+
+[test]
+# Use bun test runner
+runner = "bun"
+
+# Test timeout
+timeout = 30000
+
+[build]
+# Enable experimental features
+splitting = true

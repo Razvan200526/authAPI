@@ -1,41 +1,72 @@
 {
-  "name": "authapi",
+  "name": "@razvan/authapi",
+  "version": "1.0.0",
+  "description": "Reusable authentication module with Hono, Drizzle ORM, and TypeScript for Bun runtime",
   "type": "module",
-  "private": false,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "bun": "./src/index.ts",
+      "import": "./dist/index.js"
+    },
+    "./schema": {
+      "types": "./dist/database/schema.d.ts",
+      "bun": "./src/database/schema.ts",
+      "import": "./dist/database/schema.js"
     }
   },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md"
+  ],
   "scripts": {
-    "dev": "bun run --hot src/serve.ts",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "build": "bun build src/index.ts --outdir dist --target node --format esm && tsc --emitDeclarationOnly",
+    "build:watch": "bun build src/index.ts --outdir dist --target node --format esm --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "bun run clean && bun run build",
     "test": "bun test",
-    "build": "bun x tsc -p tsconfig.build.json"
+    "test:watch": "bun test --watch",
+    "typecheck": "tsc --noEmit",
+    "dev": "bun run src/index.ts",
+    "lint": "bunx @biomejs/biome check src/",
+    "format": "bunx @biomejs/biome format src/ --write"
   },
-  "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/bun": "latest",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/nodemailer": "^7.0.1",
-    "drizzle-kit": "^0.31.4"
+  "author": "Calin Razvan Andrei",
+  "license": "MIT",
+  "engines": {
+    "bun": ">=1.0.0"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "hono": "^3.0.0",
+    "drizzle-orm": "^0.28.0",
+    "inversify": "^6.0.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0",
+    "zod": "^3.22.0"
   },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "@biomejs/biome": "latest"
+  },
+  "optionalDependencies": {
+    "nodemailer": "^6.9.0",
+    "@types/nodemailer": "^6.4.0",
+    "pg": "^8.16.3",
+    "@types/pg": "^8.10.0",
+    "mysql2": "^3.6.0"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ],
   "dependencies": {
-    "@libsql/client": "^0.15.14",
-    "bcryptjs": "^3.0.2",
-    "console-log-colors": "^0.5.0",
-    "drizzle-orm": "^0.44.5",
-    "hono": "^4.9.6",
-    "inversify": "^7.9.1",
-    "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^7.0.6",
-    "zod": "^4.1.5"
+    "mysql2": "^3.14.4",
+    "postgres": "^3.4.7"
   }
 }

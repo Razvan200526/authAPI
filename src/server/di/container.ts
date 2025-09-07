@@ -1,23 +1,21 @@
-import { Container } from 'inversify';
+import { createAuthContainer } from '../../auth-container';
+import type { AuthModuleConfig } from '../../config/types';
 import env from '../../env';
-import { ResetPasswordController } from '../auth/controllers/resetPasswordController';
-import { Mailer } from '../mailer/mailer';
-import { PasswordResetMailer } from '../mailer/passwordResetMailer';
 
-const container = new Container();
+const config: AuthModuleConfig = {
+  database: {
+    url: env.DATABASE_URL,
+  },
+  jwt: { secret: env.JWT_SECRET },
+  email: {
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    user: env.MAIL_USER,
+    pass: env.MAIL_PASSWORD,
+    from: env.MAIL_USER,
+  },
+};
 
-// Bind environment variables as constants
-container.bind<string>('MAIL_USER').toConstantValue(env.MAIL_USER);
-container.bind<string>('MAIL_PASSWORD').toConstantValue(env.MAIL_PASSWORD);
-
-// Bind Mailer service
-container.bind<Mailer>('Mailer').to(Mailer).inSingletonScope();
-// In your container.ts
-container
-	.bind<PasswordResetMailer>('PasswordResetMailer')
-	.to(PasswordResetMailer);
-container
-	.bind<ResetPasswordController>('ResetPasswordController')
-	.to(ResetPasswordController);
-
+const container = createAuthContainer(config);
 export default container;

@@ -6,8 +6,8 @@ export const createUserService = async (user: UserModel) => {
 	const hashedPassword = await hash(password, 10);
 	const defaultRole: IUserRole = 'user';
 	const createdUser = new User({
-		username,
-		email,
+		username: username,
+		email: email,
 		password: hashedPassword,
 		role: role ? role : defaultRole,
 	});

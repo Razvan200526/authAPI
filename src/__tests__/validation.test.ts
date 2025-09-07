@@ -1,20 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test';
-import type { UserModel } from '../server/auth/models/userModel';
+import type { UserModel } from '../server/auth/types';
 
 describe('Validation', () => {
 	beforeEach(() => {
-		// Clear all mocks before each test
 		mock.restore();
 	});
 
 	afterEach(() => {
-		// Clear all mocks after each test
 		mock.restore();
 	});
 
 	describe('validateUser', () => {
 		it('should return true for valid user', async () => {
-			// Fresh import to avoid cached mocks
 			const { validateUser } = await import(
 				`../server/auth/models/validation?fresh=${Date.now()}`
 			);
@@ -31,7 +28,6 @@ describe('Validation', () => {
 		});
 
 		it('should return false for invalid user', async () => {
-			// Fresh import to avoid cached mocks
 			const { validateUser } = await import(
 				`../server/auth/models/validation?fresh=${Date.now()}`
 			);

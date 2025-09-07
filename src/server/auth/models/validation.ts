@@ -73,7 +73,7 @@ export const validateLogin = (login: LoginModel): boolean => {
 	}
 };
 
-export const validateUser = (user: UserModel): boolean => {
+export const validateUser = (user: Partial<UserModel>): boolean => {
 	try {
 		const result = userSchema.safeParse(user);
 		console.log('validateUser - input:', user);

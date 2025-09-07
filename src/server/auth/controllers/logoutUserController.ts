@@ -1,36 +1,37 @@
 import type { Context } from 'hono';
-import { logoutUserService } from '../services/logoutUserService';
+import { inject, injectable } from 'inversify';
+import type { IUserRepository } from '../repositories/IUserRepository';
 
-export const logoutUserController = async (c: Context) => {
-	try {
-		// Get user info from context (set by JWT middleware)
-		const user = c.get('user');
+@injectable()
+export class LogoutUserController {
+	constructor(@inject('UserRepository') private users: IUserRepository) {}
 
-		if (!user) {
-			return c.json({ error: 'User information not found' }, 401);
+	async logout(c: Context) {
+		try {
+			const user = c.get('user');
+			if (!user) {
+				return c.json({ error: 'User information not found' }, 401);
+			}
+
+			const sub = user.sub ?? user.userId ?? user.id;
+			if (!sub) {
+				return c.json({ error: 'Invalid user ID in token' }, 401);
+			}
+
+			await this.users.setStatus(parseInt(sub, 10), 'offline');
+
+			return c.json(
+				{
+					message: 'User successfully logged out',
+					timestamp: new Date().toISOString(),
+				},
+				200,
+			);
+		} catch (error) {
+			if (error instanceof Error) {
+				return c.json({ error: error.message || 'Internal server error' }, 500);
+			}
+			console.error('Logout controller error:', error);
 		}
-
-		// Get user ID from the JWT payload
-		const userId = user.sub || user.userId || user.id;
-
-		if (!userId) {
-			return c.json({ error: 'Invalid user ID in token' }, 401);
-		}
-
-		// Use the service to handle logout logic
-		const result = await logoutUserService(parseInt(userId, 10));
-
-		return c.json(
-			{
-				message: result.message,
-				timestamp: result.timestamp,
-			},
-			200,
-		);
-	} catch (error) {
-		if (error instanceof Error) {
-			return c.json({ error: error.message || 'Internal server error' }, 500);
-		}
-		console.error('Logout controller error:', error);
 	}
-};
+}

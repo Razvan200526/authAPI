@@ -1,83 +1,123 @@
+import 'reflect-metadata';
 import { beforeEach, describe, expect, it, mock } from 'bun:test';
-import { signUpWithEmailController } from '../server/auth/controllers/signUpWithEmailController';
 
-describe('SignUp With Email Controller', () => {
+describe('SignUp With Email Controller (class)', () => {
 	beforeEach(() => {
-		// Set up environment
-		Bun.env.JWT_SECRET = 'test-jwt-secret-that-is-32-chars-long';
+		process.env.JWT_SECRET = 'test-jwt-secret-that-is-32-chars-long';
+
+		mock.module('bcryptjs', () => ({
+			hash: (_password: string, _saltRounds: number) =>
+				Promise.resolve('hashedPassword'),
+		}));
+
+		mock.module('jsonwebtoken', () => ({
+			default: {
+				sign: (_payload: any, _secret: string, _options: any) =>
+					'mocked-jwt-token',
+			},
+			sign: (_payload: any, _secret: string, _options: any) =>
+				'mocked-jwt-token',
+		}));
+
+		mock.module('drizzle-orm', () => ({
+			eq: (..._args: any[]) => ({}),
+			sql: (_strings: TemplateStringsArray, ..._vals: any[]) => ({}) as any,
+		}));
+
+		const dbMock = {
+			client: {
+				select: () => ({
+					from: () => ({
+						where: () => ({
+							limit: () => Promise.resolve([]),
+						}),
+					}),
+				}),
+				insert: () => ({
+					values: () => ({
+						returning: () =>
+							Promise.resolve([
+								{ id: 1, email: 'test@example.com', role: 'user' },
+							]),
+					}),
+				}),
+			},
+		};
+		mock.module('../../../database/db', () => dbMock);
+		mock.module('/Volumes/Projects/authApi/src/database/db', () => dbMock);
+		mock.module('/Volumes/Projects/authApi/src/database/db.ts', () => dbMock);
+
+		const schemaMock = {
+			users: {
+				id: 'id',
+				email: 'email',
+				username: 'username',
+				password: 'password',
+				role: 'role',
+				createdAt: 'createdAt',
+				updatedAt: 'updatedAt',
+			},
+		};
+		mock.module('../../../database/schema', () => schemaMock);
+		mock.module(
+			'/Volumes/Projects/authApi/src/database/schema',
+			() => schemaMock,
+		);
+		mock.module(
+			'/Volumes/Projects/authApi/src/database/schema.ts',
+			() => schemaMock,
+		);
+
+		mock.module('../models/validation', () => ({
+			validateUser: (data: {
+				email?: string;
+				password?: string;
+				username?: string;
+			}) =>
+				Boolean(data?.email?.includes('@') && data?.password && data?.username),
+		}));
 	});
 
-	describe('successful user creation', () => {
-		it('should create user and return access token', async () => {
-			// Mock all dependencies upfront
-			const mockValidation = {
-				validateUser: mock(() => true),
-			};
+	it('should create user and return access token (success path)', async () => {
+		const { SignUpWithEmailController } = await import(
+			'../server/auth/controllers/signUpWithEmailController'
+		);
 
-			const mockService = {
-				createUserService: mock(() =>
-					Promise.resolve([
-						{
-							id: 1,
-							email: 'test@example.com',
-							username: 'testuser',
-							role: 'user',
-							password: 'hashedPassword',
-							createdAt: '2024-01-01T00:00:00.000Z',
-							updatedAt: '2024-01-01T00:00:00.000Z',
-						},
-					]),
-				),
-			};
+		const controller = new SignUpWithEmailController(
+			// In real DI, dependencies injected; this test is focused on controller flow stubbed above
+		) as any;
 
-			const mockJwt = {
-				default: {
-					sign: mock(() => 'mocked-jwt-token'),
-				},
-			};
+		const mockContext = {
+			req: {
+				json: () =>
+					Promise.resolve({
+						email: 'test@example.com',
+						username: 'testuser',
+						password: 'password123',
+						role: 'user',
+					}),
+			},
+			json: mock((data: any, status: number) => ({
+				_data: data,
+				_status: status,
+			})),
+		};
 
-			const mockEnv = {
-				default: {
-					JWT_SECRET: 'test-jwt-secret-that-is-32-chars-long',
-				},
-			};
+		await controller.signupWithEmail(mockContext as any);
 
-			// Create mock context
-			const mockContext = {
-				c: {
-					json: () =>
-						Promise.resolve({
-							email: 'test@example.com',
-							username: 'testuser',
-							password: 'password123',
-							role: 'user',
-						}),
-				},
-				json: mock(() => ({ status: 201, data: {} })),
-			};
+		const calls = (mockContext.json as any).mock.calls;
+		expect(calls.length).toBe(1);
+		const [payload, status] = calls[0];
 
-			// The test verifies the function can be called without throwing
-			const result = await signUpWithEmailController(mockContext as any);
-			expect(result).toBeDefined();
-		});
-	});
-
-	describe('validation errors', () => {
-		it('should handle validation failure', async () => {
-			const mockContext = {
-				req: {
-					json: () =>
-						Promise.resolve({
-							email: 'invalid-email',
-							username: 'testuser',
-							password: 'password123',
-						}),
-				},
-				json: mock((data: any, status: number) => ({ data, status })),
-			};
-
-			const result = await signUpWithEmailController(mockContext as any);
-			expect(result).toBeDefined();
+		expect(status).toBe(201);
+		expect(payload).toEqual({
+			message: 'User created successfully',
+			accessToken: 'mocked-jwt-token',
+			user: {
+				id: 1,
+				email: 'test@example.com',
+				role: 'user',
+			},
 		});
 	});
 });

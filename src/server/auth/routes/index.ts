@@ -2,23 +2,40 @@ import { Hono } from 'hono';
 import container from '../../di/container';
 import { LoginWithEmailAndPasswordController } from '../controllers/loginWithEmailAndPasswordController';
 import { LoginWithUsernameController } from '../controllers/loginWithUsernameAndPasswordController';
-import { logoutUserController } from '../controllers/logoutUserController';
+import { LogoutUserController } from '../controllers/logoutUserController';
 import type { ResetPasswordController } from '../controllers/resetPasswordController';
-import { signUpWithEmailController } from '../controllers/signUpWithEmailController';
+import { SignUpWithEmailController } from '../controllers/signUpWithEmailController';
 import { jwtMiddleware } from '../middleware/jwtMiddleware';
 
 const authRouter = new Hono();
 
-// Sign up
-authRouter.post('/signup/email', signUpWithEmailController);
+authRouter.post('/signup/email', async (c) => {
+	const controller = container.get<SignUpWithEmailController>(
+		'SignUpWithEmailController',
+	);
+	return controller.signupWithEmail(c);
+});
 
-// Login
-authRouter.post('/login/email', LoginWithEmailAndPasswordController);
+authRouter.post('/login/email', async (c) => {
+	const controller = container.get<LoginWithEmailAndPasswordController>(
+		'LoginWithEmailAndPasswordController',
+	);
+	return controller.loginWithEmail(c);
+});
 
-authRouter.post('login/username', LoginWithUsernameController);
+authRouter.post('login/username', async (c) => {
+	const controller = container.get<LoginWithUsernameController>(
+		'LoginWithUsernameController',
+	);
+	return controller.loginWithUsername(c);
+});
 
-//Logout
-authRouter.post('/logout', jwtMiddleware, logoutUserController);
+authRouter.post('/logout', jwtMiddleware, async (c) => {
+	const controller = container.get<LogoutUserController>(
+		'LogoutUserController',
+	);
+	return controller.logout(c);
+});
 
 authRouter.post('/reset-password/request', async (c) => {
 	const controller = container.get<ResetPasswordController>(
@@ -27,7 +44,6 @@ authRouter.post('/reset-password/request', async (c) => {
 	return controller.resetPassword(c);
 });
 
-// Validate token
 authRouter.get('/reset-password/validate/:token', async (c) => {
 	const controller = container.get<ResetPasswordController>(
 		'ResetPasswordController',
@@ -35,7 +51,6 @@ authRouter.get('/reset-password/validate/:token', async (c) => {
 	return controller.verifyResetToken(c);
 });
 
-// Confirm password reset
 authRouter.post('/reset-password/confirm', async (c) => {
 	const controller = container.get<ResetPasswordController>(
 		'ResetPasswordController',

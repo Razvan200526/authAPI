@@ -1,0 +1,27 @@
+# Source files when publishing built package
+src/
+**/__tests__/
+**/*.test.ts
+**/*.spec.ts
+
+# Build configuration
+tsconfig.json
+tsconfig.*.json
+bunfig.toml
+
+# Development files
+.env*
+.vscode/
+.idea/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+
+# Bun specific
+bun.lockb
+.bun/
