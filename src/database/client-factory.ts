@@ -1,9 +1,9 @@
 import { Database } from 'bun:sqlite';
 import { drizzle } from 'drizzle-orm/bun-sqlite';
-import { drizzle as drizzleNode } from 'drizzle-orm/node-postgres';
 import { drizzle as drizzleMysql } from 'drizzle-orm/mysql2';
-import { Pool } from 'pg';
+import { drizzle as drizzleNode } from 'drizzle-orm/node-postgres';
 import mysql from 'mysql2/promise';
+import { Pool } from 'pg';
 import type { DatabaseConfig } from '../config/types';
 import * as schema from './schema';
 

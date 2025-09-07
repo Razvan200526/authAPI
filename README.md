@@ -25,7 +25,7 @@ bun add @paladin11/authapi
 ### 1. Basic Setup
 
 ```typescript
-import { AuthModule, AuthModuleConfig } from '@paladin11/authapi';
+import { AuthModule, type AuthModuleConfig } from '@paladin11/authapi';
 import { Hono } from 'hono';
 
 const app = new Hono();
@@ -33,29 +33,35 @@ const app = new Hono();
 const config: AuthModuleConfig = {
   database: {
     url: 'sqlite://./database.db',
-    type: 'sqlite'
+    client: 'sqlite'
   },
   jwt: {
     secret: 'your-jwt-secret',
-    expiresIn: '24h'
+    expiresIn: '24h',
+    algorithm: 'HS256'
   },
   email: {
     host: 'smtp.gmail.com',
     port: 587,
     secure: false,
-    auth: {
-      user: 'your-email@gmail.com',
-      pass: 'your-app-password'
+    user: 'your-email@gmail.com',
+    pass: 'your-app-password',
+    from: 'noreply@yourapp.com'
+  },
+  routes: {
+    prefix: '/auth',
+    cors: {
+      origin: '*',
+      credentials: true
     }
   }
 };
 
 // Initialize the auth module
 const authModule = new AuthModule(config);
-await authModule.initialize();
 
 // Mount auth routes
-app.route('/auth', authModule.getRoutes());
+app.route('/auth', authModule.getRouter());
 
 export default {
   port: 3000,
@@ -74,8 +80,6 @@ const config: AuthModuleConfig = {
 
 const container = createAuthContainer(config);
 const authModule = container.resolve('AuthModule');
-
-await authModule.initialize();
 ```
 
 ## Configuration
@@ -86,8 +90,16 @@ await authModule.initialize();
 interface AuthModuleConfig {
   database: DatabaseConfig;
   jwt: JWTConfig;
-  email: EmailConfig;
+  email?: EmailConfig; // Optional
   routes?: RouteConfig;
+  logging?: {
+    level?: 'debug' | 'info' | 'warn' | 'error';
+    enabled?: boolean;
+  };
+  performance?: {
+    enableJIT?: boolean;
+    hotReload?: boolean;
+  };
 }
 ```
 
@@ -96,8 +108,17 @@ interface AuthModuleConfig {
 ```typescript
 interface DatabaseConfig {
   url: string;
-  type: 'sqlite' | 'postgres' | 'mysql';
-  authToken?: string; // For Turso/libSQL
+  client?: 'pg' | 'mysql' | 'sqlite';
+  skipInit?: boolean; // Skip schema initialization
+  bunSqlite?: {
+    create?: boolean;
+    readwrite?: boolean;
+    readonly?: boolean;
+  };
+  migrations?: {
+    migrationsFolder?: string;
+    migrationsTable?: string;
+  };
 }
 ```
 
@@ -106,7 +127,10 @@ interface DatabaseConfig {
 ```typescript
 interface JWTConfig {
   secret: string;
-  expiresIn: string; // e.g., '24h', '7d'
+  expiresIn?: string; // e.g., '24h', '7d'
+  refreshSecret?: string;
+  refreshExpiresIn?: string;
+  algorithm?: 'HS256' | 'HS384' | 'HS512' | 'RS256' | 'RS384' | 'RS512';
 }
 ```
 
@@ -116,11 +140,11 @@ interface JWTConfig {
 interface EmailConfig {
   host: string;
   port: number;
-  secure: boolean;
-  auth: {
-    user: string;
-    pass: string;
-  };
+  secure?: boolean;
+  user: string;
+  pass: string;
+  from: string; // Required: sender email address
+  timeout?: number;
 }
 ```
 
@@ -222,19 +246,22 @@ The module supports multiple databases through Drizzle ORM:
 
 ```typescript
 // SQLite
-database: { url: 'sqlite://./app.db', type: 'sqlite' }
+database: { url: 'sqlite://./app.db', client: 'sqlite' }
 
 // PostgreSQL
-database: { url: 'postgres://user:pass@localhost:5432/db', type: 'postgres' }
+database: { url: 'postgres://user:pass@localhost:5432/db', client: 'pg' }
 
 // MySQL
-database: { url: 'mysql://user:pass@localhost:3306/db', type: 'mysql' }
+database: { url: 'mysql://user:pass@localhost:3306/db', client: 'mysql' }
 
-// Turso (SQLite-compatible)
+// Bun SQLite with options
 database: {
-  url: 'libsql://your-db.turso.io',
-  type: 'sqlite',
-  authToken: 'your-auth-token'
+  url: 'sqlite://./app.db',
+  client: 'sqlite',
+  bunSqlite: {
+    create: true,
+    readwrite: true
+  }
 }
 ```
 
@@ -245,17 +272,23 @@ You can use environment variables for configuration:
 ```bash
 # Database
 DATABASE_URL="sqlite://./app.db"
-DATABASE_TYPE="sqlite"
+DATABASE_CLIENT="sqlite"
 
 # JWT
 JWT_SECRET="your-super-secret-jwt-key"
 JWT_EXPIRES_IN="24h"
+JWT_ALGORITHM="HS256"
 
 # Email
 EMAIL_HOST="smtp.gmail.com"
 EMAIL_PORT="587"
 EMAIL_USER="your-email@gmail.com"
 EMAIL_PASS="your-app-password"
+EMAIL_FROM="noreply@yourapp.com"
+
+# Optional: Logging
+LOG_LEVEL="info"
+LOG_ENABLED="true"
 ```
 
 ## Testing
